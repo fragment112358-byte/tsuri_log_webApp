@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#173f36">
+<title>釣行ログ</title>
+<style>
+:root {
+  --site-primary: #173F36;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #DCE9DE;
+  --site-on-secondary: #173F36;
+  --site-background: #F4F6F1;
+  --site-on-background: #17231F;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  color-scheme: light dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: var(--site-background); color: var(--site-on-background); }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+#app { min-height: 100vh; background-color: light-dark(#F4F6F1, #121815); color: light-dark(#17231F, #E7EEE9); border-radius: 0; }
+.topbar { background: var(--site-primary); color: var(--site-on-primary); padding: calc(17px * var(--site-spacing-scale)) 18px 16px; }
+.topline { max-width: 760px; margin: auto; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.brand { display:flex; align-items:center; gap:10px; }
+.logo { width:38px; height:38px; display:grid; place-items:center; border-radius:13px; background:#ffffff20; font-size:21px; }
+.brand h1 { font-size: calc(20px * var(--site-heading-scale)); margin:0; letter-spacing:.02em; }
+.brand p { margin:2px 0 0; font-size:12px; opacity:.78; }
+.top-pill { font-size:11px; border:1px solid #ffffff55; padding:6px 9px; border-radius:99px; white-space:nowrap; }
+main { max-width:760px; margin:0 auto; padding:18px 14px 100px; }
+.hello { display:flex; align-items:flex-end; justify-content:space-between; margin:3px 2px 16px; gap:12px; }
+.hello h2 { font-size:22px; margin:0; letter-spacing:-.03em; }
+.hello p { margin:5px 0 0; color:light-dark(#69776F,#A7B6AC); font-size:13px; }
+.date-chip { background:light-dark(#E4EAE1,#26342D); border-radius:12px; padding:9px 11px; font-size:12px; white-space:nowrap; }
+.tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; padding:5px; background:light-dark(#E7ECE5,#202A24); border-radius:14px; margin-bottom:17px; }
+.tab { border:0; background:transparent; border-radius:10px; padding:11px 5px; color:light-dark(#617068,#A8B6AC); font-size:13px; font-weight:650; }
+.tab.active { background:light-dark(#FFFFFF,#35453B); color:light-dark(#173F36,#F3F7F4); box-shadow:0 1px 4px #10201912; }
+.panel { display:none; } .panel.active { display:block; }
+.card { background:light-dark(#FFFFFF,#1D2621); border:1px solid light-dark(#E2E8E0,#303C34); border-radius:18px; padding:16px; margin-bottom:13px; box-shadow:0 3px 14px #19382a08; }
+.cardhead { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:13px; }
+.cardhead h3 { margin:0; font-size:16px; }
+.kicker { color:light-dark(#7A887F,#A0B0A5); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.tag { background:light-dark(#E6F0E7,#263D30); color:light-dark(#2B6848,#B5E4C3); border-radius:99px; padding:5px 9px; font-size:11px; font-weight:700; }
+label { display:block; font-size:12px; font-weight:700; color:light-dark(#526158,#B3C0B7); margin-bottom:6px; }
+input, select, textarea { width:100%; border:1px solid light-dark(#DDE5DC,#3A4840); background:light-dark(#FBFCFA,#151C18); color:inherit; border-radius:11px; padding:12px 12px; outline:none; min-width:0; }
+input:focus,select:focus,textarea:focus { border-color:#4C8A65; box-shadow:0 0 0 3px #4C8A6518; }
+textarea { min-height:86px; resize:vertical; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+.field { margin-bottom:12px; }
+.maphelp { font-size:11px; color:light-dark(#6F7D73,#A7B8AC); margin:7px 1px 0; }
+.primary { border:0; background:var(--site-primary); color:white; border-radius:12px; padding:13px 15px; font-weight:750; width:100%; }
+.primary:active { transform:translateY(1px); }
+.secondary { border:1px solid light-dark(#D8E2D8,#3B4A40); color:light-dark(#2B4B39,#DCE8DF); background:transparent; border-radius:11px; padding:10px 12px; font-weight:650; }
+.actionrow { display:flex; gap:8px; margin-top:10px; }
+.actionrow > * { flex:1; }
+.hint { font-size:11px; color:light-dark(#7D8981,#9EADA3); line-height:1.6; margin:10px 2px 0; }
+.statrow { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:13px; }
+.stat { background:light-dark(#FFFFFF,#1D2621); border:1px solid light-dark(#E2E8E0,#303C34); border-radius:14px; padding:12px 13px; }
+.stat small { display:block; color:light-dark(#718077,#9BAAA0); font-size:11px; }
+.stat strong { display:block; margin-top:5px; font-size:22px; }
+.tripitem { border:1px solid light-dark(#E1E8E0,#344239); background:light-dark(#FFFFFF,#1D2621); border-radius:15px; padding:14px; margin-bottom:10px; }
+.triptop { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.triptitle { font-size:15px; font-weight:800; margin:0 0 5px; }
+.tripmeta { color:light-dark(#7A877F,#A6B4AA); font-size:11px; }
+.tripchips { display:flex; flex-wrap:wrap; gap:6px; margin:11px 0 0; }
+.chip { border-radius:7px; background:light-dark(#EFF3ED,#2B3730); padding:5px 7px; font-size:11px; color:light-dark(#56675B,#B7C5BB); }
+.tripbuttons { display:flex; gap:7px; margin-top:12px; }
+.tripbuttons button { flex:1; }
+.empty { text-align:center; padding:28px 12px; color:light-dark(#77847B,#A1B0A6); }
+.empty .emoji { font-size:34px; margin-bottom:8px; }
+.empty strong { display:block; color:inherit; margin-bottom:5px; }
+.equipment-row { display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid light-dark(#E8EDE7,#303C34); padding:12px 0; }
+.equipment-row:last-child { border-bottom:0; }
+.lure-entry { border:1px solid light-dark(#DDE6DC,#344239); border-radius:13px; padding:12px; margin:10px 0; }
+.lure-entry-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+.lure-entry-head strong { font-size:13px; }
+.lure-entry .field { margin-bottom:9px; }
+.lure-entry textarea { min-height:60px; }
+.lure-entry .remove-lure { padding:7px 9px; font-size:11px; }
+.equipment-row strong { display:block; font-size:13px; }
+.equipment-row small { display:block; color:light-dark(#7B887F,#A5B2A9); margin-top:4px; font-size:11px; }
+.modalback { position:fixed; inset:0; background:#08130dcc; z-index:10; display:none; align-items:flex-end; justify-content:center; padding:12px; }
+.modalback.open { display:flex; }
+.modal { width:min(100%,560px); max-height:90vh; overflow:auto; border-radius:22px; background:light-dark(#F8FAF6,#19211C); color:light-dark(#17231F,#E7EEE9); padding:18px; box-shadow:0 15px 60px #0005; }
+.modalhead { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.modalhead h3 { margin:0; font-size:19px; }
+.close { border:0; background:light-dark(#E7ECE5,#303D34); color:inherit; width:34px; height:34px; border-radius:50%; font-size:20px; }
+.toast { position:fixed; z-index:20; bottom:85px; left:50%; transform:translateX(-50%); background:#183F35; color:white; padding:11px 16px; border-radius:99px; font-size:13px; box-shadow:0 4px 20px #0003; display:none; white-space:nowrap; }
+.bottomnav { position:fixed; bottom:0; left:0; right:0; z-index:5; padding:9px 16px calc(9px + env(safe-area-inset-bottom)); background:light-dark(#FFFFFFF2,#1D2621F2); backdrop-filter:blur(14px); border-top:1px solid light-dark(#E2E8E0,#303C34); display:flex; justify-content:center; }
+.bottominner { width:min(100%,560px); display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.navbtn { border:0; background:transparent; color:light-dark(#78867C,#A3B0A6); border-radius:12px; padding:7px 4px; font-size:11px; font-weight:650; }
+.navbtn span { display:block; font-size:19px; margin-bottom:2px; }
+.navbtn.active { background:light-dark(#E5EFE5,#2B4033); color:light-dark(#24543A,#C5E8CF); }
+@media(min-width:620px) { main {padding-top:26px;} .modalback {align-items:center;} }
+@media(max-width:380px) { .top-pill {display:none;} .hello h2 {font-size:20px;} .grid2 {gap:8px;} .card {padding:13px;} }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar"><div class="topline"><div class="brand"><div class="logo">🎣</div><div><h1>釣行ログ</h1><p>自分だけのフィッシングノート</p></div></div><div class="top-pill">PRIVATE LOG · DEMO</div></div></header>
+  <main>
+    <div class="hello"><div><h2 id="greeting">次の釣行を記録しよう</h2><p>現地ではサクッと、詳細はあとから。</p></div><div class="date-chip" id="todayLabel">今日</div></div>
+    <nav class="tabs" aria-label="メインメニュー"><button class="tab active" data-tab="quick">＋ 記録する</button><button class="tab" data-tab="history">▤ 履歴</button><button class="tab" data-tab="gear">⚙ 道具</button></nav>
+    <section class="panel active" id="panel-quick">
+      <div class="statrow"><div class="stat"><small>記録した釣行</small><strong id="statTrips">0<span style="font-size:12px;font-weight:500"> 回</span></strong></div><div class="stat"><small>釣れた魚</small><strong id="statFish">0<span style="font-size:12px;font-weight:500"> 匹</span></strong></div><div class="stat"><small>釣り場</small><strong id="statSpots">0<span style="font-size:12px;font-weight:500"> か所</span></strong></div></div>
+      <form class="card" id="quickForm">
+        <div class="cardhead"><div><div class="kicker">QUICK ENTRY</div><h3 style="margin-top:4px">今日の釣行</h3></div><span class="tag">現地で入力</span></div>
+        <div class="field"><label for="spot">釣り場名</label><input id="spot" placeholder="例：江戸川放水路" list="spotOptions" autocomplete="off"><datalist id="spotOptions"></datalist></div>
+        <div class="field"><label for="spotLocation">住所・Googleマップのリンク（任意）</label><input id="spotLocation" placeholder="住所やGoogleマップの共有リンクを貼り付け"><p class="maphelp">Googleマップで釣り場を開き、住所または共有リンクをコピーして貼り付けてください。記録後に地図を開けます。</p></div>
+        <div class="grid2"><div class="field"><label for="startTime">開始時刻</label><input id="startTime" type="time"></div><div class="field"><label for="endTime">終了時刻（任意）</label><input id="endTime" type="time"></div></div>
+        <div class="grid2"><div class="field"><label for="crowd">混雑状況</label><select id="crowd"><option value="空いている">🟢 空いている</option><option value="普通" selected>🟡 普通</option><option value="混雑">🔴 混雑</option></select></div><div class="field"><label for="result">釣果</label><select id="result"><option value="まだ未入力">あとで入力</option><option value="釣れた">釣れた！</option><option value="アタリのみ">アタリあり</option><option value="ボウズ">釣果なし</option></select></div></div>
+        <div class="field"><label for="quickNotes">備考（任意）</label><textarea id="quickNotes" placeholder="例：3gメタルバイブは反応なし。クランクでチェイスあり。"></textarea></div>
+        <button class="primary" type="submit">釣行を記録する　→</button><p class="hint">※この試作品は入力内容をこのプレビュー内に保存します。実運用のクラウド保存はまだ未接続です。</p>
+      </form>
+      <div class="card"><div class="cardhead"><h3>最近の釣行</h3><button class="secondary" type="button" onclick="showTab('history')">すべて見る</button></div><div id="recentTrips"></div></div>
+    </section>
+    <section class="panel" id="panel-history"><div class="card"><div class="cardhead"><div><div class="kicker">YOUR JOURNAL</div><h3 style="margin-top:4px">釣行履歴</h3></div><span class="tag" id="historyCount">0件</span></div><div class="field"><input id="searchTrips" placeholder="釣り場・メモ・ルアーで検索"></div><div id="tripList"></div></div></section>
+    <section class="panel" id="panel-gear"><div class="card"><div class="cardhead"><div><div class="kicker">TACKLE BOX</div><h3 style="margin-top:4px">自分の道具</h3></div><span class="tag">マイリスト</span></div><p class="hint" style="margin:0 0 8px">一度登録すれば、釣行の詳細入力で選べるようにする想定です。</p><div id="gearList"></div><div class="field" style="margin-top:14px"><label for="gearName">道具の名前</label><input id="gearName" placeholder="例：鱒レンジャー MOBILE SP-522"></div><div class="grid2"><div class="field"><label for="gearType">種類</label><select id="gearType"><option>ロッド</option><option>リール</option><option>ライン</option><option>ルアー</option><option>その他</option></select></div><div class="field"><label for="gearMemo">メモ（任意）</label><input id="gearMemo" placeholder="例：2000番"></div></div><button class="primary" type="button" id="addGear">＋ 道具を追加</button></div></section>
+  </main>
+  <div class="bottomnav"><div class="bottominner"><button class="navbtn active" data-tab="quick"><span>＋</span>記録</button><button class="navbtn" data-tab="history"><span>▤</span>履歴</button><button class="navbtn" data-tab="gear"><span>⚙</span>道具</button></div></div>
+</div>
+<div class="modalback" id="detailModal"><div class="modal"><div class="modalhead"><h3>釣行の詳細を編集</h3><button class="close" id="closeModal" aria-label="閉じる">×</button></div><form id="detailForm"><input type="hidden" id="editId"><div class="grid2"><div class="field"><label for="detailDate">日付</label><input id="detailDate" type="date"></div><div class="field"><label for="detailSpecies">魚種</label><input id="detailSpecies" placeholder="例：ハゼ、シーバス"></div></div><div class="grid2"><div class="field"><label for="detailCount">匹数</label><input id="detailCount" type="number" min="0" value="0"></div><div class="field"><label for="detailTide">潮回り・潮位メモ</label><input id="detailTide" placeholder="例：中潮、満潮前"></div></div><div class="field"><label for="detailGear">タックル</label><input id="detailGear" placeholder="例：ロッド / リール / ライン"></div><div class="field"><label>使用ルアーと結果</label><p class="hint" style="margin:0 0 8px">ルアーごとに使用時間・反応・釣果を記録できます。</p><div id="lureEntries"></div><button class="secondary" type="button" id="addLureEntry">＋ 使用ルアーを追加</button></div><div class="field"><label for="detailLure">ルアー・エサの補足（任意）</label><input id="detailLure" placeholder="例：ほかに試したエサなど"></div><div class="field"><label for="detailWeather">天気・風</label><input id="detailWeather" placeholder="例：晴れ、北風弱め"></div><div class="field"><label for="detailNotes">メモ</label><textarea id="detailNotes" placeholder="アタリがあった時間、足場、根掛かり、気づいたことなど"></textarea></div><div class="field"><label for="detailPhoto">写真（この試作品では端末内の一時プレビュー）</label><input id="detailPhoto" type="file" accept="image/*"><div id="photoPreview" style="margin-top:8px"></div></div><button class="primary" type="submit">詳細を保存する</button><div class="actionrow"><button class="secondary" type="button" id="deleteTrip">この記録を削除</button><button class="secondary" type="button" id="cancelEdit">キャンセル</button></div></form></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $ = id => document.getElementById(id);
+const today = new Date();
+const localDate = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`; };
+const displayDate = s => s ? s.replaceAll('-','/') : '日付未設定';
+$('todayLabel').textContent = `${today.getMonth()+1}月${today.getDate()}日`;
+$('startTime').value = `${String(today.getHours()).padStart(2,'0')}:${String(today.getMinutes()).padStart(2,'0')}`;
+let trips = [];
+let gear = [
+ {id:1,name:'鱒レンジャー MOBILE SP-522',type:'ロッド',memo:'例として登録'},
+ {id:2,name:'Shimano FX 2000',type:'リール',memo:'例として登録'},
+ {id:3,name:'3g メタルバイブ',type:'ルアー',memo:'例として登録'}
+];
+let photoData = {};
+let nextId = 1;
+try { const saved = sessionStorage.getItem('tsuriLogDemo'); if(saved){ const p=JSON.parse(saved); trips=p.trips||[]; gear=p.gear||gear; nextId=p.nextId||1; } } catch(e) {}
+function persist(){ try{sessionStorage.setItem('tsuriLogDemo',JSON.stringify({trips,gear,nextId}));}catch(e){} }
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',2300);}
+function showTab(name){ document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+name)); document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name)); window.scrollTo({top:0,behavior:'smooth'}); if(name==='history') renderHistory(); if(name==='gear') renderGear(); }
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function updateStats(){ $('statTrips').innerHTML=`${trips.length}<span style="font-size:12px;font-weight:500"> 回</span>`; $('statFish').innerHTML=`${trips.reduce((n,t)=>n+(Number(t.count)||0),0)}<span style="font-size:12px;font-weight:500"> 匹</span>`; $('statSpots').innerHTML=`${new Set(trips.map(t=>t.spot.trim()).filter(Boolean)).size}<span style="font-size:12px;font-weight:500"> か所</span>`; $('historyCount').textContent=`${trips.length}件`; }
+function tripCard(t){return `<article class="tripitem"><div class="triptop"><div><p class="triptitle">${safe(t.spot||'釣り場未設定')}</p><div class="tripmeta">${displayDate(t.date)}　${safe(t.start||'時刻未設定')}${t.end?'〜'+safe(t.end):''}</div></div><span class="tag">${safe(t.result||'未入力')}</span></div><div class="tripchips"><span class="chip">混雑：${safe(t.crowd||'未入力')}</span>${t.species?`<span class="chip">${safe(t.species)} ${Number(t.count)||0}匹</span>`:''}${t.lure?`<span class="chip">🎣 ${safe(t.lure)}</span>`:''}${t.location?`<span class="chip">📍 ${safe(t.location.length>42?t.location.slice(0,42)+'…':t.location)}</span>`:''}</div><div class="tripbuttons">${t.location?`<button class="secondary" onclick="openTripMap(${t.id})">地図で見る</button>`:''}<button class="secondary" onclick="editTrip(${t.id})">詳細・編集</button><button class="secondary" onclick="quickDelete(${t.id})">削除</button></div></article>`;}
+function renderRecent(){ $('recentTrips').innerHTML=trips.length?trips.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,2).map(tripCard).join(''):`<div class="empty"><div class="emoji">🌊</div><strong>まだ記録がありません</strong>最初の釣行を記録してみよう。</div>`; }
+function renderHistory(){const q=$('searchTrips').value.toLowerCase().trim();const filtered=trips.filter(t=>[t.spot,t.notes,t.lure,t.species,t.gear].join(' ').toLowerCase().includes(q)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));$('tripList').innerHTML=filtered.length?filtered.map(tripCard).join(''):`<div class="empty"><div class="emoji">📝</div><strong>${q?'見つかりませんでした':'釣行履歴はまだ空です'}</strong>${q?'別のキーワードで検索してみてください':'記録すると、ここに一覧表示されます。'}</div>`;updateStats();}
+$('searchTrips').addEventListener('input',renderHistory);
+function renderGear(){ $('gearList').innerHTML=gear.length?gear.map(g=>`<div class="equipment-row"><div><strong>${safe(g.name)}</strong><small>${safe(g.type)}${g.memo?' · '+safe(g.memo):''}</small></div><button class="secondary" onclick="removeGear(${g.id})">削除</button></div>`).join(''):`<div class="empty">まだ道具がありません</div>`; $('spotOptions').innerHTML=[...new Set(trips.map(t=>t.spot).filter(Boolean))].map(s=>`<option value="${safe(s)}"></option>`).join(''); }
+ $('quickForm').addEventListener('submit',e=>{e.preventDefault();const spot=$('spot').value.trim();if(!spot){$('spot').focus();toast('釣り場名を入力してください');return;}const t={id:nextId++,spot,date:localDate(today),start:$('startTime').value,end:$('endTime').value,crowd:$('crowd').value,result:$('result').value,location:$('spotLocation').value.trim(),pin:null,species:'',count:0,tide:'',gear:'',lure:'',weather:'',notes:$('quickNotes').value.trim()};trips.unshift(t);persist();updateStats();renderRecent();renderHistory();renderGear();$('spot').value='';$('spotLocation').value='';$('endTime').value='';$('result').value='まだ未入力';$('quickNotes').value='';toast('釣行を記録しました。備考も保存しました');});
+window.openTripMap=id=>{const t=trips.find(x=>x.id===id);if(!t||!t.location){toast('この記録には住所・地図リンクがありません');return;}const loc=/^https?:\/\//i.test(t.location)?t.location:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.location)}`;window.open(loc,'_blank','noopener');};
+function renderLureEntries(entries){const host=$('lureEntries');host.innerHTML='';(entries?.length?entries:[{name:'',time:'',result:'未使用',catchCount:0,note:''}]).forEach((item,index)=>{const el=document.createElement('div');el.className='lure-entry';el.innerHTML=`<div class="lure-entry-head"><strong>使用ルアー ${index+1}</strong>${index?'<button type="button" class="secondary remove-lure">削除</button>':''}</div><div class="field"><label>ルアー名・種類</label><input class="lure-name" placeholder="例：3gメタルバイブ" value="${safe(item.name||'')}"></div><div class="grid2"><div class="field"><label>使用時間</label><input class="lure-time" placeholder="例：10:20〜10:45" value="${safe(item.time||'')}"></div><div class="field"><label>結果</label><select class="lure-result">${['未使用','反応なし','チェイスあり','アタリあり','バラシ','釣れた','根掛かり・ロスト'].map(v=>`<option${(item.result||'未使用')===v?' selected':''}>${v}</option>`).join('')}</select></div></div><div class="grid2"><div class="field"><label>このルアーで釣れた匹数</label><input class="lure-count" type="number" min="0" value="${Number(item.catchCount)||0}"></div><div class="field"><label>色・重さ（任意）</label><input class="lure-spec" placeholder="例：イワシ色、3g" value="${safe(item.spec||'')}"></div></div><div class="field"><label>使った感想・反応のメモ</label><textarea class="lure-note" placeholder="例：底付近をゆっくり巻くとアタリがあった">${safe(item.note||'')}</textarea></div>`;const remove=el.querySelector('.remove-lure');if(remove)remove.addEventListener('click',()=>{const data=collectLureEntries();data.splice(index,1);renderLureEntries(data);});host.appendChild(el);});}
+function collectLureEntries(){return [...$('lureEntries').querySelectorAll('.lure-entry')].map(el=>({name:el.querySelector('.lure-name').value.trim(),time:el.querySelector('.lure-time').value.trim(),result:el.querySelector('.lure-result').value,catchCount:Number(el.querySelector('.lure-count').value)||0,spec:el.querySelector('.lure-spec').value.trim(),note:el.querySelector('.lure-note').value.trim()})).filter(x=>x.name||x.time||x.note||x.result!=='未使用'||x.catchCount);}
+$('addLureEntry').addEventListener('click',()=>{const data=collectLureEntries();data.push({name:'',time:'',result:'未使用',catchCount:0,note:''});renderLureEntries(data);});
+window.editTrip=id=>{const t=trips.find(x=>x.id===id);if(!t)return;$('editId').value=id;$('detailDate').value=t.date||localDate(today);$('detailSpecies').value=t.species||'';$('detailCount').value=t.count||0;$('detailTide').value=t.tide||'';$('detailGear').value=t.gear||'';$('detailLure').value=t.lure||'';$('detailWeather').value=t.weather||'';$('detailNotes').value=t.notes||'';renderLureEntries(t.lureEntries||[]);$('detailPhoto').value='';$('photoPreview').innerHTML=photoData[id]?`<img src="${photoData[id]}" alt="釣行写真" style="max-width:100%;max-height:180px;border-radius:10px">`:'';$('detailModal').classList.add('open');};
+function closeModal(){$('detailModal').classList.remove('open');}
+$('closeModal').addEventListener('click',closeModal);$('cancelEdit').addEventListener('click',closeModal);$('detailModal').addEventListener('click',e=>{if(e.target===$('detailModal'))closeModal();});
+$('detailPhoto').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>5*1024*1024){toast('試作品では5MB以下の写真を選んでください');e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{const id=$('editId').value;photoData[id]=reader.result;$('photoPreview').innerHTML=`<img src="${reader.result}" alt="写真プレビュー" style="max-width:100%;max-height:180px;border-radius:10px">`;};reader.readAsDataURL(f);});
+ $('detailForm').addEventListener('submit',e=>{e.preventDefault();const id=Number($('editId').value);const t=trips.find(x=>x.id===id);if(!t)return;Object.assign(t,{date:$('detailDate').value,species:$('detailSpecies').value.trim(),count:Number($('detailCount').value)||0,tide:$('detailTide').value.trim(),gear:$('detailGear').value.trim(),lure:$('detailLure').value.trim(),lureEntries:collectLureEntries(),weather:$('detailWeather').value.trim(),notes:$('detailNotes').value.trim()});persist();closeModal();renderRecent();renderHistory();updateStats();toast('詳細を保存しました');});
+$('deleteTrip').addEventListener('click',()=>{const id=Number($('editId').value);if(!confirm('この釣行記録を削除しますか？'))return;trips=trips.filter(t=>t.id!==id);delete photoData[id];persist();closeModal();renderRecent();renderHistory();updateStats();toast('記録を削除しました');});
+window.quickDelete=id=>{if(!confirm('この釣行記録を削除しますか？'))return;trips=trips.filter(t=>t.id!==id);delete photoData[id];persist();renderRecent();renderHistory();updateStats();toast('記録を削除しました');};
+$('addGear').addEventListener('click',()=>{const name=$('gearName').value.trim();if(!name){$('gearName').focus();toast('道具の名前を入力してください');return;}gear.push({id:Date.now(),name,type:$('gearType').value,memo:$('gearMemo').value.trim()});$('gearName').value='';$('gearMemo').value='';persist();renderGear();toast('道具を追加しました');});
+window.removeGear=id=>{gear=gear.filter(g=>g.id!==id);persist();renderGear();toast('道具を削除しました');};
+renderRecent();renderHistory();renderGear();updateStats();
+</script>
+</body>
+</html>
